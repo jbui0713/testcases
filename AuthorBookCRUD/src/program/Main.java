@@ -1,8 +1,6 @@
 package program;
-import core.DB;
+
 import entity.*;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +12,10 @@ public class Main {
     private static DAO bookDAO;
     private static int table;
     private static int option;
-    private static int authorID;
+    private static String authorID;
     private static String firstName;
     private static String lastName;
-    private static int isbn;
+    private static String isbn;
     private static String title;
     
     public static void main(String[] args) {
@@ -27,8 +25,8 @@ public class Main {
         Author author;
         bookDAO = new BookDAO();
         Book book;
-        printAuthors();
         printBooks();
+        printAuthors();
         System.out.println("Enter Author(0), Book(1), or All Options(2) for table options: ");
         table = scan.nextInt();
         switch (table) {
@@ -38,13 +36,10 @@ public class Main {
             case 1:
                 System.out.println("Select from Options 5-8\nCreate Book(5) | Return Book(6) | Update Book(7) | Delete Book(8): ");
                 break;
-            case 2:
-                System.out.println("Select from Options 1-4\nCreate Author(1) | Return Author(2) | Update Author(3) | Delete Author(4)"
-                        + "\nOptions 5-8\nCreate Book(5) | Return Book(6) | Update Book(7) | Delete Book(8) | Exit(9)");
-                break;
+            case 2: 
             default:
-                System.out.println("Exiting program due to invalid input");
-                    break;
+                System.out.println("Select from Options 1-4\nCreate Author(1) | Return Author(2) | Update Author(3) | Delete Author(4)"
+                        + "\nOptions 5-8\nCreate Book(5) | Return Book(6) | Update Book(7) | Delete Book(8)");
         }
             option = scan.nextInt();
             
@@ -55,13 +50,13 @@ public class Main {
                     System.out.println("Enter new author Last Name: ");
                     lastName = newinfo.nextLine();
                     System.out.println("Enter new author ID: ");
-                    authorID = newinfo.nextInt();
+                    authorID = Double.toString(newinfo.nextDouble());
                     addAuthor(authorID,firstName,lastName);
                     printAuthors();
                     break;
                 case 2:
                     System.out.println("Enter Author ID for information: ");
-                    authorID = newinfo.nextInt();
+                    authorID = Double.toString(newinfo.nextDouble());
                     author = getAuthor(authorID);
                     System.out.println(author);
                     break;
@@ -70,30 +65,27 @@ public class Main {
                     firstName = newinfo.nextLine();
                     System.out.println("Enter new author Last Name: ");
                     lastName = newinfo.nextLine();
-                    System.out.println("Enter existing author ID: ");
-                    authorID = newinfo.nextInt();
+                    System.out.println("Enter new author ID: ");
+                    authorID = Double.toString(newinfo.nextDouble());
                     updateAuthor(authorID,firstName,lastName);
                     printAuthors();
                     break; 
                 case 4:
-                    System.out.println("Enter Author ID to delete: ");
-                    authorID = newinfo.nextInt();
-                    deleteAuthor(authorID);
-                    printAuthors();
+                    System.out.println("Works ");
                     break;
                 case 5:
                     System.out.println("Enter new book Title: ");
                     title = newinfo.nextLine();
-                    System.out.println("Enter existing book ISBN: ");
-                    isbn = newinfo.nextInt();
+                    System.out.println("Enter new book ISBN: ");
+                    isbn = Double.toString(newinfo.nextDouble());
                     System.out.println("Enter new author ID: ");
-                    authorID = newinfo.nextInt();
+                    authorID = Double.toString(newinfo.nextDouble());
                     addBook(isbn,title,authorID);
                     printBooks();
                     break;
                 case 6:
                     System.out.println("Enter Book ISBN for information: ");
-                    isbn = newinfo.nextInt();
+                    isbn = Double.toString(newinfo.nextDouble());
                     book = getBook(isbn);
                     System.out.println(book);
                     break;
@@ -101,17 +93,13 @@ public class Main {
                     System.out.println("Enter new book Title: ");
                     title = newinfo.nextLine();
                     System.out.println("Enter new book ISBN: ");
-                    isbn = newinfo.nextInt();
+                    isbn = Double.toString(newinfo.nextDouble());
                     System.out.println("Enter new author ID: ");
-                    authorID = newinfo.nextInt();
+                    authorID = Double.toString(newinfo.nextDouble());
                     updateBook(isbn,title,authorID);
                     printBooks();
                     break;
                 case 8:
-                    System.out.println("Enter Book ISBN to delete: ");
-                    isbn = newinfo.nextInt();
-                    deleteBook(isbn);
-                    printBooks();
                     break;
                 case 9:
                     System.out.println("Exiting program");
@@ -150,31 +138,37 @@ public class Main {
 //        printAuthors();
 //        System.out.println("-----------------------------------------------------------");
 //        printBooks();
-//        
+        
     }
     
-    static void addAuthor(int authorID, String firstName, String lastName) {
+    static void addAuthor(String authorID, String firstName, String lastName) {
         Author author;
         author = new Author(authorID, firstName, lastName);
         authorDAO.insert(author);
     }
     
-    static Author getAuthor(int authorID) {
+    static Author getAuthor(String authorID) {
         Optional<Author> author = authorDAO.get(authorID);
-        return author.orElseGet(() -> new Author(-1, "Non-exist", "Non-exist"));
+        return author.orElseGet(() -> new Author("Non-exist", "Non-exist", "Non-exist"));
     }
     
     
-    static void updateAuthor(int authorID, String firstName, String lastName) {
+    static void updateAuthor(String authorID, String firstName, String lastName) {
         Author author;
         author = new Author (authorID, firstName, lastName);
         authorDAO.update(author);
     }
     
-    static void deleteAuthor(int authorID) {
+    static void deleteAuthor(String authorID) {
+        try {
             Author author;
             author = getAuthor(authorID);
-            authorDAO.delete(author);      
+            authorDAO.delete(author);
+        } catch (Exception ex){
+            System.err.println(ex.toString());
+            System.out.println("Cannot not delete author with exisiting books in database.");
+        }
+        
     }
     
     static void printAuthors() {
@@ -183,36 +177,36 @@ public class Main {
         //Print column names as header
         for (int i = 0; i < numberCols; i++) {
             String header = headers.get(i);
-            System.out.printf("%30s", header);
+            System.out.printf("%17s", header);
         }
         System.out.println();
         //Print the results
         List<Author> authors = authorDAO.getAll();
         int numberRows = authors.size();
         for (int i = 0; i < numberRows; i++) {
-            System.out.printf("%30s%30s%30s", authors.get(i).getAuthorID(), authors.get(i).getFirstName(), authors.get(i).getLastName());
+            System.out.printf("%17s%17s%17s", authors.get(i).getAuthorID(), authors.get(i).getFirstName(), authors.get(i).getLastName());
             System.out.println();
         }
         
     }
-    static void addBook(int isbn, String title, int authorID) {
+    static void addBook(String isbn, String title, String authorID) {
         Book book;
         book = new Book(isbn, title, authorID);
         bookDAO.insert(book);
     }
     
-    static Book getBook(int authorID) {
-        Optional<Book> book = bookDAO.get(authorID);
-        return book.orElseGet(() -> new Book(-1, "Non-exist", -1));
+    static Book getBook(String isbn) {
+        Optional<Book> book = bookDAO.get(isbn);
+        return book.orElseGet(() -> new Book("Non-exist", "Non-exist", "Non-exist"));
     }
     
-    static void updateBook(int isbn, String title, int authorID) {
+    static void updateBook(String isbn, String title, String authorID) {
         Book book;
         book = new Book(isbn, title, authorID);
         bookDAO.update(book);
     }
     
-    static void deleteBook(int isbn) {
+    static void deleteBook(String isbn) {
         Book book;
         book = getBook(isbn);
         bookDAO.delete(book);
@@ -224,14 +218,14 @@ public class Main {
         //Print column names as header
         for (int i = 0; i < numberCols; i++) {
             String header = headers.get(i);
-            System.out.printf("%30s", header);
+            System.out.printf("%17s", header);
         }
         System.out.println();
         //Print the results
         List<Book> books = bookDAO.getAll();
         int numberRows = books.size();
         for (int i = 0; i < numberRows; i++) {
-            System.out.printf("%30s%30s%30s", books.get(i).getISBN(), books.get(i).getTitle(), books.get(i).getAuthorID());
+            System.out.printf("%17s%17s%17s", books.get(i).getISBN(), books.get(i).getTitle(), books.get(i).getAuthorID());
             System.out.println();
         }
         

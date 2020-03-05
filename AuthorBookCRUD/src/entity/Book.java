@@ -8,18 +8,18 @@ import java.math.BigInteger;
  */
 public class Book
 { // Class Contact created
-    private int isbn; // ID of contact
+    private String isbn; // ID of contact
     private String title; // First name of contect
-    private int authorID; // Last name of contact
+    private String authorID; // Last name of contact
     
-    public Book(int isbn, String title, int authorID)
+    public Book(String isbn, String title, String authorID)
     { // Constuctor created for contact
         this.isbn = isbn; // returns ID 
         this.title = title; // returns first name
         this.authorID = authorID; // returns last name
     }
 
-    public int getISBN() {
+    public String getISBN() {
         return isbn;
     }
 
@@ -27,7 +27,7 @@ public class Book
         return title;
     }
 
-    public int getAuthorID() {
+    public String getAuthorID() {
         return authorID;
     }
 

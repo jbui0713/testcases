@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Wed Mar 04 18:51:23 EST 2020:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0170-a7f6-036b-0000009edeb8 
-on database directory V:\Downloads\CMPSC221-master\CMPSC221-master\AuthorBookCRUD\mybookdb with class loader sun.misc.Launcher$AppClassLoader@1c7c054 
-Loaded from file:/V:/My%20Documents/NetBeansProjects/AddressBookDAOFly/lib/derby.jar
+Thu Mar 05 02:36:47 EST 2020:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0170-a9a0-1d0a-00000eb3a7c0 
+on database directory C:\Users\Jefferson\Desktop\AuthorBookCRUD\mybookdb with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
+Loaded from file:/C:/Users/Jefferson/Documents/NetBeansProjects/AddressBookDAOFly/lib/derby.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_211-b25
-user.dir=V:\Downloads\CMPSC221-master\CMPSC221-master\AuthorBookCRUD
+java.runtime.version=1.8.0_241-b07
+user.dir=C:\Users\Jefferson\Desktop\AuthorBookCRUD
 os.name=Windows 10
-os.arch=x86
+os.arch=amd64
 os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

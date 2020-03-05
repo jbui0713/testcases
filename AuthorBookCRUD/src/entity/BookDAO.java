@@ -6,7 +6,6 @@
 package entity;
 
 import core.DB;
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -30,17 +29,17 @@ public class BookDAO implements DAO<Book>{
      * @return 
      */
     @Override
-    public Optional<Book> get(int isbn) {
+    public Optional<Book> get(String isbn) {
         DB db = DB.getInstance();
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM Book WHERE isbn = ?";
             PreparedStatement stmt = db.getPreparedStatement(sql);
-            stmt.setInt(1, isbn);
+            stmt.setString(1, isbn);
             rs = stmt.executeQuery();
             Book book = null;
             while (rs.next()) {
-                book = new Book(rs.getInt("isbn"), rs.getString("title"), rs.getInt("authorID"));
+                book = new Book(rs.getString("isbn"), rs.getString("title"), rs.getString("authorID"));
             }
             return Optional.ofNullable(book);
         } catch (SQLException ex) {
@@ -63,7 +62,7 @@ public class BookDAO implements DAO<Book>{
             rs = db.executeQuery(sql);
             Book book = null;
             while (rs.next()) {
-                book = new Book(rs.getInt("isbn"), rs.getString("title"), rs.getInt("authorID"));
+                book = new Book(rs.getString("isbn"), rs.getString("title"), rs.getString("authorID"));
                 books.add(book);
             }
             return books;
@@ -84,9 +83,9 @@ public class BookDAO implements DAO<Book>{
         try {
             String sql = "INSERT INTO Book(isbn, title, authorID) VALUES (?, ?, ?)";
             PreparedStatement stmt = db.getPreparedStatement(sql);
-            stmt.setInt(1, book.getISBN());
+            stmt.setString(1, book.getISBN());
             stmt.setString(2, book.getTitle());
-            stmt.setInt(3, book.getAuthorID());
+            stmt.setString(3, book.getAuthorID());
             int rowInserted = stmt.executeUpdate();
             if (rowInserted > 0) {
                 System.out.println("A new book was inserted successfully!");
@@ -104,11 +103,11 @@ public class BookDAO implements DAO<Book>{
     public void update(Book book) {
         DB db = DB.getInstance();
         try {
-            String sql = "UPDATE Book SET title = ?, authorID = ? WHERE isbn = ?";
+            String sql = "UPDATE Book SET title=?, authorID=? WHERE isbn=?";
             PreparedStatement stmt = db.getPreparedStatement(sql);
             stmt.setString(1, book.getTitle());
-            stmt.setInt(2, book.getAuthorID());
-            stmt.setInt(3, book.getISBN());
+            stmt.setString(2, book.getAuthorID());
+            stmt.setString(3, book.getISBN());
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("An existing book was updated successfully!");
@@ -128,7 +127,7 @@ public class BookDAO implements DAO<Book>{
         try {
             String sql = "DELETE FROM Book WHERE isbn = ?";
             PreparedStatement stmt = db.getPreparedStatement(sql);
-            stmt.setInt(1, book.getISBN());
+            stmt.setString(1, book.getISBN());
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("A book was deleted successfully!");
@@ -148,7 +147,7 @@ public class BookDAO implements DAO<Book>{
         ResultSet rs = null;
         List<String> headers = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM Book WHERE isbn = -1";//We just need this sql query to get the column headers
+            String sql = "SELECT * FROM Book WHERE isbn = isbn";//We just need this sql query to get the column headers
             rs = db.executeQuery(sql);
             ResultSetMetaData rsmd = rs.getMetaData();
             //Get number of columns in the result set
@@ -162,28 +161,5 @@ public class BookDAO implements DAO<Book>{
             return null;
         } 
     }
-//    @Override
-//    public void flush() {
-//        DB db = DB.getInstance();
-//        ResultSet rs = null;
-//        authors = new ArrayList<>();
-//        try {
-//            String sql = "SELECT * FROM Author";
-//            rs = db.executeQuery(sql);
-//            Author Author = null;
-//            while (rs.next()) {
-//                contact = new Contact(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"));
-//                contacts.delete(contact);
-//            }
-//            return contacts;
-//        } catch (SQLException ex) {
-//            System.err.println(ex.toString());
-//            return null;
-//        }
-//    }
 
-//    @Override
-//    public Optional<Book> get(int authorID) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 }

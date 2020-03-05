@@ -29,17 +29,17 @@ public class AuthorDAO implements DAO<Author>
      * @return 
      */
     @Override
-    public Optional<Author> get(int authorID) {
+    public Optional<Author> get(String authorID) {
         DB db = DB.getInstance();
         ResultSet rs = null;
         try {
             String sql = "SELECT * FROM Author WHERE authorID = ?";
             PreparedStatement stmt = db.getPreparedStatement(sql);
-            stmt.setInt(1, authorID);
+            stmt.setString(1, authorID);
             rs = stmt.executeQuery();
             Author author = null;
             while (rs.next()) {
-                author = new Author(rs.getInt("authorID"), rs.getString("firstName"), rs.getString("lastname"));
+                author = new Author(rs.getString("authorID"), rs.getString("firstName"), rs.getString("lastname"));
             }
             return Optional.ofNullable(author);
         } catch (SQLException ex) {
@@ -62,7 +62,7 @@ public class AuthorDAO implements DAO<Author>
             rs = db.executeQuery(sql);
             Author author = null;
             while (rs.next()) {
-                author = new Author(rs.getInt("authorID"), rs.getString("firstname"), rs.getString("lastname"));
+                author = new Author(rs.getString("authorID"), rs.getString("firstname"), rs.getString("lastname"));
                 authors.add(author);
             }
             return authors;
@@ -83,7 +83,7 @@ public class AuthorDAO implements DAO<Author>
         try {
             String sql = "INSERT INTO Author(authorID, firstName, lastName) VALUES (?, ?, ?)";
             PreparedStatement stmt = db.getPreparedStatement(sql);
-            stmt.setInt(1, author.getAuthorID());
+            stmt.setString(1, author.getAuthorID());
             stmt.setString(2, author.getFirstName());
             stmt.setString(3, author.getLastName());
             int rowInserted = stmt.executeUpdate();
@@ -103,11 +103,11 @@ public class AuthorDAO implements DAO<Author>
     public void update(Author author) {
         DB db = DB.getInstance();
         try {
-            String sql = "UPDATE Author SET firstName = ?, lastName = ? WHERE authorID = ?";
+            String sql = "UPDATE Author SET firstName=?, lastName=? WHERE authorID=?";
             PreparedStatement stmt = db.getPreparedStatement(sql);
             stmt.setString(1, author.getFirstName());
             stmt.setString(2, author.getLastName());
-            stmt.setInt(3, author.getAuthorID());
+            stmt.setString(3, author.getAuthorID());
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("An existing author was updated successfully!");
@@ -127,7 +127,7 @@ public class AuthorDAO implements DAO<Author>
         try {
             String sql = "DELETE FROM Author WHERE authorID = ?";
             PreparedStatement stmt = db.getPreparedStatement(sql);
-            stmt.setInt(1, author.getAuthorID());
+            stmt.setString(1, author.getAuthorID());
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("A author was deleted successfully!");
@@ -147,7 +147,7 @@ public class AuthorDAO implements DAO<Author>
         ResultSet rs = null;
         List<String> headers = new ArrayList<>();
         try {
-            String sql = "SELECT * FROM Author WHERE authorID = -1";//We just need this sql query to get the column headers
+            String sql = "SELECT * FROM Author WHERE authorID = authorID";//We just need this sql query to get the column headers
             rs = db.executeQuery(sql);
             ResultSetMetaData rsmd = rs.getMetaData();
             //Get number of columns in the result set
@@ -161,28 +161,4 @@ public class AuthorDAO implements DAO<Author>
             return null;
         } 
     }
-//    @Override
-//    public void flush() {
-//        DB db = DB.getInstance();
-//        ResultSet rs = null;
-//        authors = new ArrayList<>();
-//        try {
-//            String sql = "SELECT * FROM Author";
-//            rs = db.executeQuery(sql);
-//            Author Author = null;
-//            while (rs.next()) {
-//                contact = new Contact(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getString("phonenumber"));
-//                contacts.delete(contact);
-//            }
-//            return contacts;
-//        } catch (SQLException ex) {
-//            System.err.println(ex.toString());
-//            return null;
-//        }
-//    }
-
-//    @Override
-//    public Optional<Author> get(int ISBN) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
 }

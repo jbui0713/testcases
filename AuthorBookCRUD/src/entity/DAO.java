@@ -14,12 +14,12 @@ import java.util.Optional;
 public interface DAO<T> 
 {
     //Optional is a container used to contain not-null objects.
-    Optional<T> get(int authorID); //Gets one row of table and returns it
+    Optional<T> get(String authorid); //Gets one row of table and returns it
+    //Optional<T> get(String isbn); //Gets one row of table and returns it
     List<T> getAll(); // Returns all objects of type T, returns all record of table 
     void insert(T t); // Insert object type T 
     void update(T t); // Update ojbect T
     void delete(T t); // Deletes object T
     //void flush();
     List<String> getColumnNames(); // Gets the column of names of the table 
-
 }
